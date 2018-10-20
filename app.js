@@ -3,11 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// connect to db
+// connect to database
+mongoose.connect('mongodb://localhost:27017/SiSuper2', {
+    useNewUrlParser: true 
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +29,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// Header Jamu error CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Header', '*')
+  if (req.method == 'OPTIONS'){
+      res.header(
+          'Access-Control-Allow-Methods',
+          'PUT, POST, PATCH, DELETE, GET'    
+      )
+      return res.status(200).json({})
+  }
+  next()
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
