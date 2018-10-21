@@ -30,6 +30,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// cek up API
+app.get('/', (req, res, next) => {
+  res.status(200).json({
+    status: 200,
+    message: 'ready to rock n roll!'
+  })
+})
+
 // Header Jamu error CORS
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
