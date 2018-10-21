@@ -31,7 +31,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // cek up API
-app.get('/', (req, res, next) => {
+app.get('/test', (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: 'ready to rock n roll!'
