@@ -1,0 +1,151 @@
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+const Event = require('../models/event')
+
+router.get('/', (req, res, next) => {
+    Event.find()
+    .select('name date location description _id')
+    .exec()
+    .then(docs => {
+        const response = {
+            count: docs.length,
+            event: docs.map(doc => {
+                return {
+                    name: doc.name,
+                    date: doc.date,
+                    location: doc.location,
+                    description: doc.description,
+                    _id: doc._id,
+                    request:{
+                        type: 'GET',
+                        url: 'http://localhost:3000/events/' + doc._id
+                    }
+                }
+            })
+        };
+        res.status(200).json(response);
+
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
+router.post('/', (req, res, next) => {
+    const event = new Event({ 
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        date: req.body.date,
+        location: req.body.location,
+        description: req.body.description
+    });
+    event.save().then(result=>{
+        console.log(result);
+        res.status(201).json({
+            message: 'Created event successfully',
+            createdProduct: {
+                name: result.name,
+                date: result.date,
+                location: result.location,
+                description: result.description,
+                _id: result._id,
+                request:{
+                    type: 'GET',
+                    url: "http://localhost:3000/events/" + result._id
+                }
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
+router.get('/:eventId', (req,res,next) =>{
+    const id = req.params.eventId;
+    Event.findById(id)
+    .select('name date location description _id')
+    .exec()
+    .then(doc=>{
+        console.log("From Database",doc);
+        if(doc){
+            res.status(200).json({
+                product: doc,
+                request: {
+                    type: 'GET',
+                    url: "http://localhost:3000/events"
+                }
+            });
+        }
+        else{
+            res.status(404).json({message: "No Valid Entry found for provided ID"});
+        }
+        res.status(200).json(doc);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+router.patch('/:eventId', (req,res,next) =>{
+    const id = req.params.eventId;
+    const updateOps = {};
+    for(const ops of req.body){
+        updateOps[ops.propName] = ops.value;
+    }
+    Event.update({_id: id}, {$set: updateOps})
+    .exec()
+    .then(result=> {
+        res.status(200).json({
+            message: 'Event updated',
+            request: {
+                type: 'GET',
+                url: 'http://localhost:3000/events/' + id
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error:err
+        });
+    });
+});
+
+router.delete('/:eventId', (req,res,next) =>{
+    const id = req.params.eventId;
+    Event.remove({_id: id})
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            message: 'Event deleted',
+            request: {
+                type: 'POST',
+                url: 'http://localhost:3000/events',
+                body: {
+                    name: 'String',
+                    date: 'Date',
+                    location: 'String',
+                    description: 'String'
+                }
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        }); 
+    });
+});
+
+module.exports = router;
