@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Event = require('../models/event')
+const Event = require('../model/event')
 
 router.get('/', (req, res, next) => {
     Event.find()

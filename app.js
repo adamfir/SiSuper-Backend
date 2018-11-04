@@ -14,6 +14,7 @@ var app = express();
 
 // connect to db
 // connect to database
+// db activated mongod.exe --dbpath "c:\mongodb\data"
 mongoose.connect('mongodb://localhost:27017/SiSuper2', {
     useNewUrlParser: true 
 })
