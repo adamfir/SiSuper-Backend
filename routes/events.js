@@ -6,7 +6,7 @@ const Event = require('../models/event')
 
 router.get('/', (req, res, next) => {
     Event.find()
-    .select('name date location description _id')
+    .select('name organized_by date location description _id')
     .exec()
     .then(docs => {
         const response = {
@@ -14,6 +14,7 @@ router.get('/', (req, res, next) => {
             event: docs.map(doc => {
                 return {
                     name: doc.name,
+                    organized_by: doc.organized_by,
                     date: doc.date,
                     location: doc.location,
                     description: doc.description,
@@ -40,6 +41,7 @@ router.post('/', (req, res, next) => {
     const event = new Event({ 
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
+        organized_by: req.body.organized_by,
         date: req.body.date,
         location: req.body.location,
         description: req.body.description
@@ -50,6 +52,7 @@ router.post('/', (req, res, next) => {
             message: 'Created event successfully',
             createdProduct: {
                 name: result.name,
+                organized_by: result.organized_by,
                 date: result.date,
                 location: result.location,
                 description: result.description,
@@ -72,7 +75,7 @@ router.post('/', (req, res, next) => {
 router.get('/:eventId', (req,res,next) =>{
     const id = req.params.eventId;
     Event.findById(id)
-    .select('name date location description _id')
+    .select('name organized_by date location description _id')
     .exec()
     .then(doc=>{
         console.log("From Database",doc);
@@ -133,6 +136,7 @@ router.delete('/:eventId', (req,res,next) =>{
                 url: 'http://localhost:3000/events',
                 body: {
                     name: 'String',
+                    organized_by: 'String',
                     date: 'Date',
                     location: 'String',
                     description: 'String'
