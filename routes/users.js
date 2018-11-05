@@ -5,7 +5,7 @@ var bcript = require('bcrypt')
 var User = require('../model/users')
 var jwt = require('jsonwebtoken')
 
-router.post('/signup', (req, res, next) => {
+router.post('/signUp', (req, res, next) => {
   // email sudah ada ?
   User.find({email: req.body.email})
     .exec()
@@ -65,7 +65,7 @@ router.post('/signup', (req, res, next) => {
   
 })
 
-router.post('/signin', (req, res, next) => {
+router.post('/signIn', (req, res, next) => {
   User.findOne({ email: req.body.email})
     .exec()
     .then(user => {
@@ -135,4 +135,83 @@ router.get('/', (req, res, next) => {
       })
     })
 })
+
+router.get('/userList', (req, res, next) => {
+  User.find()
+    .exec()
+    .then(user => {
+      res.status(200).json({
+        status: 200,
+        message: "Successfuly retrieve data.",
+        result: user
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        status: 500,
+        message: "Failed to Retrive User data."
+      })
+    })
+})
+
+router.get('/getUserById/:userId', (req, res, next) => {
+  id = req.param.userId
+  User.findOne({_id: "5bc9e5ed6bea852cb47221fe"})
+    .exec()
+    .then(user => {
+      res.status(200).json({
+        status: 200,
+        message: "Successfuly retrieve data.",
+        result: user,
+        look: id
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        status: 500,
+        message: "Failed to retrive data"
+      })
+    })
+})
+
+router.get('/suspendUser/:userId', (req, res, next) => {
+  id = req.params.userId
+  User.updateOne({_id: id}, {$set: {account_status: 0}})
+    .exec()
+    .then(user => {
+      res.status(200).json({
+        status: 200,
+        message: "User Suspended!"
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        status: 500,
+        message: "Failed to suspend"
+      })
+    })
+})
+
+router.get('/unsuspendUser/:userId', (req, res, next) => {
+  id = req.params.userId
+  User.updateOne({_id: id}, {$set: {account_status: 1}})
+    .exec()
+    .then(user => {
+      res.status(200).json({
+        status: 200,
+        message: "User Unsuspended!"
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        status: 500,
+        message: "Failed to Unsuspend"
+      })
+    })
+})
+
 module.exports = router;
