@@ -5,7 +5,7 @@ const checkAuth = require('../middleware/check-auth');
 
 const Event = require('../model/event')
 
-router.get('/', checkAuth, (req, res, next) => {
+router.get('/getAllEvent', checkAuth, (req, res, next) => {
     Event.find()
     .select('name organized_by date location description _id')
     .exec()
@@ -38,7 +38,7 @@ router.get('/', checkAuth, (req, res, next) => {
     });
 });
 
-router.post('/', checkAuth, (req, res, next) => {
+router.post('/createEvent', checkAuth, (req, res, next) => {
     const event = new Event({ 
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -73,7 +73,7 @@ router.post('/', checkAuth, (req, res, next) => {
     });
 });
 
-router.get('/:eventId', checkAuth, (req,res,next) =>{
+router.get('/getEvent/:eventId', checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
     Event.findById(id)
     .select('name organized_by date location description _id')
@@ -100,7 +100,7 @@ router.get('/:eventId', checkAuth, (req,res,next) =>{
     });
 });
 
-router.patch('/:eventId', checkAuth, (req,res,next) =>{
+router.patch('/editEvent/:eventId', checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
     const updateOps = {};
     for(const ops of req.body){
@@ -125,7 +125,7 @@ router.patch('/:eventId', checkAuth, (req,res,next) =>{
     });
 });
 
-router.delete('/:eventId', checkAuth, (req,res,next) =>{
+router.delete('/deleteEvent/:eventId', checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
     Event.remove({_id: id})
     .exec()
