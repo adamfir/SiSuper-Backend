@@ -51,7 +51,7 @@ router.post('/createEvent', checkAuth, (req, res, next) => {
         console.log(result);
         res.status(201).json({
             message: 'Created event successfully',
-            createdProduct: {
+            createdEvent: {
                 name: result.name,
                 organized_by: result.organized_by,
                 date: result.date,
@@ -82,7 +82,7 @@ router.get('/getEvent/:eventId', checkAuth, (req,res,next) =>{
         console.log("From Database",doc);
         if(doc){
             res.status(200).json({
-                product: doc,
+                event: doc,
                 request: {
                     type: 'GET',
                     url: "http://localhost:3000/events"
