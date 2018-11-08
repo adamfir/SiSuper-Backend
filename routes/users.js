@@ -34,7 +34,7 @@ router.post('/signUp', (req, res, next) => {
               password: hash,
               phone: req.body.phone,
               address: req.body.address,
-              image: null,
+              image: "aaaaa",
               account_status: 1,
             })
             user.save()
