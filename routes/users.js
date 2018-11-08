@@ -4,6 +4,7 @@ var router = express.Router();
 var bcript = require('bcrypt')
 var User = require('../model/users')
 var jwt = require('jsonwebtoken')
+const checkAuth = require('../middleware/check-auth');
 
 router.post('/signUp', (req, res, next) => {
   // email sudah ada ?
@@ -136,7 +137,7 @@ router.get('/', (req, res, next) => {
     })
 })
 
-router.get('/userList', (req, res, next) => {
+router.get('/userList', checkAuth, (req, res, next) => {
   User.find()
     .exec()
     .then(user => {
@@ -155,7 +156,7 @@ router.get('/userList', (req, res, next) => {
     })
 })
 
-router.get('/getUserById/:userId', (req, res, next) => {
+router.get('/getUserById/:userId', checkAuth, (req, res, next) => {
   id = req.param.userId
   User.findOne({_id: "5bc9e5ed6bea852cb47221fe"})
     .exec()
@@ -176,7 +177,7 @@ router.get('/getUserById/:userId', (req, res, next) => {
     })
 })
 
-router.get('/suspendUser/:userId', (req, res, next) => {
+router.get('/suspendUser/:userId', checkAuth, (req, res, next) => {
   id = req.params.userId
   User.updateOne({_id: id}, {$set: {account_status: 0}})
     .exec()
@@ -195,7 +196,7 @@ router.get('/suspendUser/:userId', (req, res, next) => {
     })
 })
 
-router.get('/unsuspendUser/:userId', (req, res, next) => {
+router.get('/unsuspendUser/:userId', checkAuth, (req, res, next) => {
   id = req.params.userId
   User.updateOne({_id: id}, {$set: {account_status: 1}})
     .exec()
