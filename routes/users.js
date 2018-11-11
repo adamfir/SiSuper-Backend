@@ -6,6 +6,8 @@ var User = require('../model/users')
 var jwt = require('jsonwebtoken')
 const checkAuth = require('../middleware/check-auth');
 
+var key = "sisuper"
+
 router.post('/signUp', (req, res, next) => {
   // email sudah ada ?
   User.find({email: req.body.email})
@@ -89,7 +91,7 @@ router.post('/signIn', (req, res, next) => {
             var token = jwt.sign({
               email: user.email,
               userId: user._id
-              }, process.env.JWT_KEY, 
+              }, key, 
               {
                 expiresIn: "1h"
               }
