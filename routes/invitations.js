@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const checkAuth = require('../middleware/check-auth');
 
+const Invitation = require('../model/invitation')
 const User = require('../model/users');
 const Event = require('../model/event')
 
 //Handle incoming get request to /invitations
-router.get('/', (req, res, next) => {
+router.get('/', checkAuth, (req, res, next) => {
     Invitation
     .find()
     .select('event user _id')
@@ -35,7 +37,7 @@ router.get('/', (req, res, next) => {
     })
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', checkAuth, (req, res, next) => {
     Event.findById(req.body.eventId)
     .then(event =>{
         if(!event){
@@ -74,7 +76,7 @@ router.post('/', (req, res, next) => {
     });
 });
 
-router.get('/:invitationId', (req, res, next) => {
+router.get('/:invitationId', checkAuth, (req, res, next) => {
     Invitation.findById(req.params.invitationId)
     .populate('event user')
     .exec()
@@ -99,7 +101,7 @@ router.get('/:invitationId', (req, res, next) => {
     });
 });
 
-router.delete('/:invitationId', (req, res, next) => {
+router.delete('/:invitationId', checkAuth, (req, res, next) => {
     Invitation.remove({_id: req.params.invitationId}).exec()
     .then(result => {
         res.status(200).json({
