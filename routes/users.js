@@ -96,7 +96,8 @@ router.post('/signIn', (req, res, next) => {
             res.status(200).json({
               status: 200,
               message: "sukses",
-              token: token
+              token: token,
+              result: user
             })
           }
           else{
@@ -213,6 +214,13 @@ router.get('/unsuspendUser/:userId', checkAuth, (req, res, next) => {
         message: "Failed to Unsuspend"
       })
     })
+})
+
+router.post('/editProfile/:userId', checkAuth, (req, res, next) => {
+  id = req.params.userId
+  User.updateOne({_id: id}, {$set: {password: req.body.password, 
+    phone: req.body.phone, 
+    address: req.body.address}})
 })
 
 module.exports = router;
