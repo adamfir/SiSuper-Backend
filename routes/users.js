@@ -4,6 +4,35 @@ var router = express.Router();
 var bcript = require('bcrypt')
 var User = require('../model/users')
 var jwt = require('jsonwebtoken')
+
+//img upload
+var multer = require('multer')
+
+//Profile Pict
+var fileFilter = (req, file, cb) => {
+  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'image/png'){
+    cb(null, true)
+  }
+  else{
+    cb(null, false)
+  }
+}
+var store = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './img/userProfilePicture/')
+  },
+  filename: function(req, file, cb) {
+    cb(null, req.params.userId.concat('.jpg'))
+  }
+})
+var imgProfilePicture = multer({
+  storage: store,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+})
+
 const checkAuth = require('../middleware/check-auth');
 
 
@@ -35,7 +64,7 @@ router.post('/signUp', (req, res, next) => {
               password: hash,
               phone: req.body.phone,
               address: req.body.address,
-              image: "Not Defined",
+              image: null,
               account_status: 1,
             })
             user.save()
@@ -219,9 +248,41 @@ router.get('/unsuspendUser/:userId', checkAuth, (req, res, next) => {
 
 router.post('/editProfile/:userId', checkAuth, (req, res, next) => {
   id = req.params.userId
-  User.updateOne({_id: id}, {$set: {password: req.body.password, 
-    phone: req.body.phone, 
-    address: req.body.address}})
+  bcript.hash(req.body.password, 10, (err, hash) => {
+    if(err){
+      return res.status(500).json({
+        status: 500,
+        message: "Update failed! Check your password",
+        errLog: err,
+        hash: hash,
+        body: req.body
+      })
+    }
+    else{
+      User.updateOne({_id: id}, {$set: {password: hash, 
+        phone: req.body.phone, 
+        address: req.body.address}})
+        .exec()
+        .then(result => {
+          res.status(200).json({
+            status: 200,
+            message: "edit Success!"
+          })
+        })
+    }
+  })
+})
+
+router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfilePicture'), checkAuth, (req, res, next) => {
+  User.updateOne({_id: id}, {$set: {
+    image: req.file.path}})
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        status: 200,
+        message: "Upload Success!"
+      })
+    })
 })
 
 module.exports = router;
