@@ -285,4 +285,14 @@ router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfile
     })
 })
 
+router.post('/nullImage:userId', (req, res, next) => {
+  User.update({$set: {image: null}})
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        status: 200,
+        message: "Sukese wid!"
+      })
+    })
+})
 module.exports = router;
