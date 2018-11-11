@@ -17,13 +17,8 @@ var app = express();
 // connect to database
 // db activated mongod.exe --dbpath "c:\mongodb\data"
 mongoose.connect('mongodb://localhost:27017/SiSuper2', {
-<<<<<<< HEAD
-  useNewUrlParser: true
-})
-=======
     useNewUrlParser: true
 });
->>>>>>> ad7ee89cae9e5ae2d25b72eb0bf20359cd3bac0d
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

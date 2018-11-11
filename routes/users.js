@@ -70,7 +70,7 @@ router.post('/signIn', (req, res, next) => {
   User.findOne({ email: req.body.email})
     .exec()
     .then(user => {
-      if(user.length < 1){
+      if(user == null){
           res.status(404).json({
           status: 404,
           message: 'user tidak ditemukan'
@@ -114,7 +114,6 @@ router.post('/signIn', (req, res, next) => {
       res.status(500).json({
         status: 500,
         message: "gagal login",
-        look: user
       })
     })
 })
