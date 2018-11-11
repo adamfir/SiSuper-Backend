@@ -34,7 +34,7 @@ router.post('/signUp', (req, res, next) => {
               password: hash,
               phone: req.body.phone,
               address: req.body.address,
-              image: "aaaaa",
+              image: "Not Defined",
               account_status: 1,
             })
             user.save()
@@ -85,14 +85,15 @@ router.post('/signIn', (req, res, next) => {
             })
           }
           else if(result){
-            var token = jwt.sign({
-              email: user.email,
-              userId: user._id
-              }, process.env.JWT_KEY, 
-              {
-                expiresIn: "1h"
-              }
-            )
+            var token = "ini token loh"
+            // var token = jwt.sign({
+            //   email: user.email,
+            //   userId: user._id
+            //   }, process.env.JWT_KEY, 
+            //   {
+            //     expiresIn: "1h"
+            //   }
+            // )
             res.status(200).json({
               status: 200,
               message: "sukses",
