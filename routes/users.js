@@ -248,47 +248,23 @@ router.get('/unsuspendUser/:userId', checkAuth, (req, res, next) => {
 
 router.post('/editProfile/:userId', checkAuth, (req, res, next) => {
   id = req.params.userId
-  User.findOne({ _id: id})
+  User.updateOne({_id: id}, {$set: { 
+    phone: req.body.phone, 
+    address: req.body.address}})
     .exec()
-    .then(user => {
-      if(req.body.password == user.password){
-        User.updateOne({_id: id}, {$set: { 
-          phone: req.body.phone, 
-          address: req.body.address}})
-          .exec()
-          .then(result => {
-            res.status(200).json({
-              status: 200,
-              message: "edit Success!, no pass"
-            })
-        })
-      }
-      else{
-        bcript.hash(req.body.password, 10, (err, hash) => {
-          if(err){
-            return res.status(500).json({
-              status: 500,
-              message: "Update failed! Check your password",
-              errLog: err,
-              hash: hash,
-              body: req.body
-            })
-          }
-          else{
-            User.updateOne({_id: id}, {$set: {password: hash, 
-              phone: req.body.phone, 
-              address: req.body.address}})
-              .exec()
-              .then(result => {
-                res.status(200).json({
-                  status: 200,
-                  message: "edit Success!"
-                })
-            })
-          }
-        })
-      }
-  })
+    .then(result => {
+      res.status(200).json({
+        status: 200,
+        message: "edit Success!"
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        status: 500,
+        message: "Failed to edit"
+      })
+    })
 })
 
 router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfilePicture'), checkAuth, (req, res, next) => {
@@ -313,4 +289,5 @@ router.post('/nullImage:userId', (req, res, next) => {
       })
     })
 })
+
 module.exports = router;
