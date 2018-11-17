@@ -22,6 +22,8 @@ router.get('/', checkAuth, (req, res, next) => {
                     _id: doc._id,
                     event: doc.event,
                     user: doc.user,
+                    response: doc.response,
+                    count: doc.response.length,
                     request:{
                         type: 'GET',
                         url: 'http://localhost:3000/invitations/' + doc._id
@@ -48,7 +50,8 @@ router.post('/', checkAuth, (req, res, next) => {
         const invitation = new Invitation({
             _id: mongoose.Types.ObjectId(),
             event: req.body.eventId,
-            user: req.body.userId
+            user: req.body.userId,
+            response: req.body.response
         });
         return invitation.save();
             })
@@ -59,7 +62,8 @@ router.post('/', checkAuth, (req, res, next) => {
                     createdInvitation: {
                         _id: result._id,
                         event: result.event,
-                        user: result.user
+                        user: result.user,
+                        response: result.response
                     },
                     request:{
                         type: 'GET',
@@ -87,7 +91,8 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
             });
         }
         res.status(200).json({
-            order: order,
+            invitation: invitation,
+            count: invitation.response.length,
             request :{
                 type: 'GET',
                 url: "http://localhost:3000/invitations"
