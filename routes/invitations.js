@@ -23,7 +23,7 @@ router.get('/', checkAuth, (req, res, next) => {
                     event: doc.event,
                     user: doc.user,
                     response: doc.response,
-                    count: doc.response.length,
+                    kehadiran: doc.response.length,
                     request:{
                         type: 'GET',
                         url: 'http://localhost:3000/invitations/' + doc._id
@@ -92,7 +92,7 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
         }
         res.status(200).json({
             invitation: invitation,
-            count: invitation.response.length,
+            kehadiran: invitation.response.length,
             request :{
                 type: 'GET',
                 url: "http://localhost:3000/invitations"
