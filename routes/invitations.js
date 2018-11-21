@@ -7,11 +7,11 @@ const Invitation = require('../model/invitation')
 const User = require('../model/users');
 const Event = require('../model/event')
 
-//Handle incoming get request to /invitations
+
 router.get('/', checkAuth, (req, res, next) => {
     Invitation
     .find()
-    .select('event user _id')
+    .select('event user response _id')
     .populate('event user')
     .exec()
     .then(docs =>{
@@ -23,7 +23,7 @@ router.get('/', checkAuth, (req, res, next) => {
                     event: doc.event,
                     user: doc.user,
                     response: doc.response,
-                    kehadiran: doc.response.length,
+                    //kehadiran: doc.response.length,
                     request:{
                         type: 'GET',
                         url: 'http://localhost:3000/invitations/' + doc._id
@@ -38,6 +38,7 @@ router.get('/', checkAuth, (req, res, next) => {
         });
     })
 });
+
 
 router.post('/', checkAuth, (req, res, next) => {
     Event.findById(req.body.eventId)
@@ -92,7 +93,7 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
         }
         res.status(200).json({
             invitation: invitation,
-            kehadiran: invitation.response.length,
+            //kehadiran: invitation.response.length,
             request :{
                 type: 'GET',
                 url: "http://localhost:3000/invitations"

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const checkAuth = require('../middleware/check-auth');
 
 const Event = require('../model/event')
+const Invitation = require('../model/invitation')
 
 router.get('/', checkAuth, (req, res, next) => {
     Event.find()
