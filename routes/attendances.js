@@ -3,13 +3,13 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const checkAuth = require('../middleware/check-auth');
 
-const Invitation = require('../model/invitation')
+const Attendance = require('../model/attendance')
 const User = require('../model/users');
 const Event = require('../model/event')
 
 
 router.get('/', checkAuth, (req, res, next) => {
-    Invitation
+    Attendance
     .find()
     .select('event user response _id')
     .populate('event user')
@@ -17,7 +17,7 @@ router.get('/', checkAuth, (req, res, next) => {
     .then(docs =>{
         res.status(200).json({
             count: docs.length,
-            invitation: docs.map(doc =>{
+            attendance: docs.map(doc =>{
                 return {
                     _id: doc._id,
                     event: doc.event,
@@ -48,19 +48,19 @@ router.post('/', checkAuth, (req, res, next) => {
                 message: 'Event not found'
             })
         }
-        const invitation = new Invitation({
+        const attendance = new Attendance({
             _id: mongoose.Types.ObjectId(),
             event: req.body.eventId,
             user: req.body.userId,
             response: req.body.response
         });
-        return invitation.save();
+        return attendance.save();
             })
             .then(result => {
                 console.log(result);
                 res.status(201).json({
                     message: 'Invitation stored',
-                    createdInvitation: {
+                    createdAttendance: {
                         _id: result._id,
                         event: result.event,
                         user: result.user,
@@ -75,24 +75,24 @@ router.post('/', checkAuth, (req, res, next) => {
             })
             .catch(err => {
                 res.status(500).json({
-                    message: 'Invitations not created',
+                    message: 'Attendance not created',
                     error: err
                 });
     });
 });
 
-router.get('/:invitationId', checkAuth, (req, res, next) => {
-    Invitation.findById(req.params.invitationId)
+router.get('/:attendanceId', checkAuth, (req, res, next) => {
+    Attendance.findById(req.params.attendanceId)
     .populate('event user')
     .exec()
-    .then(invitation => {
-        if(!invitation){
+    .then(attendance => {
+        if(!attendance){
             return res.status(404).json({
-                message: 'Invitation not found'
+                message: 'Attendance not found'
             });
         }
         res.status(200).json({
-            invitation: invitation,
+            attendance: attendance,
             //kehadiran: invitation.response.length,
             request :{
                 type: 'GET',
@@ -107,8 +107,8 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
     });
 });
 
-router.patch('/:invitationId', checkAuth, (req,res,next) =>{
-    const id = req.params.invitationId;
+router.patch('/:attendanceId', checkAuth, (req,res,next) =>{
+    const id = req.params.attendanceId;
     const updateOps = {};
     for(const ops of req.body){
         updateOps[ops.propName] = ops.value;
@@ -117,7 +117,7 @@ router.patch('/:invitationId', checkAuth, (req,res,next) =>{
     .exec()
     .then(result=> {
         res.status(200).json({
-            message: 'Invitation updated',
+            message: 'Attendance updated',
             request: {
                 type: 'GET',
                 url: 'http://localhost:3000/invitations/' + id
@@ -132,11 +132,11 @@ router.patch('/:invitationId', checkAuth, (req,res,next) =>{
     });
 });
 
-router.delete('/:invitationId', checkAuth, (req, res, next) => {
-    Invitation.remove({_id: req.params.invitationId}).exec()
+router.delete('/:attendanceId', checkAuth, (req, res, next) => {
+    Invitation.remove({_id: req.params.attendanceId}).exec()
     .then(result => {
         res.status(200).json({
-            message: 'Invitation deleted',
+            message: 'Attendance deleted',
             request :{
                 type: 'POST',
                 url: "http://localhost:3000/orders",
