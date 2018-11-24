@@ -8,8 +8,8 @@ var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eventRouter = require('./routes/events');
-var invitationRouter = require('./routes/invitations');
-var reviewRouter = require('./routes/reviews');
+var attendanceRouter = require('./routes/attendances');
+var reviewRouter = require('./routes/reviews')
 var productRouter = require('./routes/products')
 
 var app = express();
@@ -38,7 +38,7 @@ app.use('/userProfilePicture', express.static('img/userProfilePicture'))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventRouter);
-app.use('/invitations', invitationRouter);
+app.use('/attendances', attendanceRouter);
 app.use('/reviews', reviewRouter)
 app.use('/products', productRouter)
 
