@@ -21,7 +21,7 @@ var avgReview = (result) =>{
     return [sum_location/i, sum_event/i, sum_content/i]
 }
 
-router.get('/', (req, res, next) => {
+router.get('/', checkAuth,(req, res, next) => {
     Review.find()
         .exec()
         .then(reviews => {
@@ -38,7 +38,27 @@ router.get('/', (req, res, next) => {
         })
 })
 
-router.post('/createReview', (req, res, next) => {
+router.post('/getReviewById', checkAuth, (req, res, next) => {
+    Review.find({_id: req.body.eventId})
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                status: 200,
+                result: result
+            })
+        })
+        .catch(err => {
+            {
+                res.status(500).json({
+                    staus: 500,
+                    message: "failed to retrive data.",
+                    error: err
+                })
+            }
+        })
+})
+
+router.post('/createReview', checkAuth, (req, res, next) => {
     const review = new Review({
         _id: new mongoose.Types.ObjectId(),
         user_id: req.body.userId,
@@ -63,7 +83,7 @@ router.post('/createReview', (req, res, next) => {
         })
 })
 
-router.get('/getAverageRating', (req, res, next) => {
+router.post('/getAverageRating', checkAuth, (req, res, next) => {
     id = req.body.eventId,
     Review.find({event_id: id})
         .exec()
