@@ -3,15 +3,15 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const checkAuth = require('../middleware/check-auth');
 
-const Attendance = require('../model/attendance')
+const Invitation = require('../model/invitation')
 const User = require('../model/users');
 const Event = require('../model/event')
 
 
 router.get('/', checkAuth, (req, res, next) => {
-    Attendance
+    Invitation
     .find()
-    .select('event user response _id')
+    .select('event user _id')
     .populate('event user')
     .exec()
     .then(docs =>{
@@ -22,11 +22,9 @@ router.get('/', checkAuth, (req, res, next) => {
                     _id: doc._id,
                     event: doc.event,
                     user: doc.user,
-                    response: doc.response,
-                    //kehadiran: doc.response.length,
                     request:{
                         type: 'GET',
-                        url: 'http://localhost:3000/attendances/' + doc._id
+                        url: 'http://localhost:3000/invitations/' + doc._id
                     }
                 }
             })
@@ -48,55 +46,52 @@ router.post('/', checkAuth, (req, res, next) => {
                 message: 'Event not found'
             })
         }
-        const attendance = new Attendance({
+        const invitation = new Invitation({
             _id: mongoose.Types.ObjectId(),
             event: req.body.eventId,
-            user: req.body.userId,
-            response: req.body.response
+            user: req.body.userId
         });
-        return attendance.save();
+        return invitation.save();
             })
             .then(result => {
                 console.log(result);
                 res.status(201).json({
-                    message: 'Attendance stored',
+                    message: 'Invitation stored',
                     createdAttendance: {
                         _id: result._id,
                         event: result.event,
-                        user: result.user,
-                        response: result.response
+                        user: result.user
                     },
                     request:{
                         type: 'GET',
-                        url: 'http://localhost:3000/attendances/' + result._id
+                        url: 'http://localhost:3000/invitations/' + result._id
                     }
                 });
             
             })
             .catch(err => {
                 res.status(500).json({
-                    message: 'Attendance not created',
+                    message: 'Invitation not created',
                     error: err
                 });
     });
 });
 
-router.get('/:attendanceId', checkAuth, (req, res, next) => {
-    Attendance.findById(req.params.attendanceId)
+router.get('/:invitationId', checkAuth, (req, res, next) => {
+    Attendance.findById(req.params.invitationId)
     .populate('event user')
     .exec()
-    .then(attendance => {
-        if(!attendance){
+    .then(invitation => {
+        if(!invitation){
             return res.status(404).json({
-                message: 'Attendance not found'
+                message: 'Invitation not found'
             });
         }
         res.status(200).json({
             attendance: attendance,
-            //kehadiran: invitation.response.length,
             request :{
                 type: 'GET',
-                url: "http://localhost:3000/attendances"
+                url: "http://localhost:3000/invitations"
             }
         })
     })
@@ -107,20 +102,20 @@ router.get('/:attendanceId', checkAuth, (req, res, next) => {
     });
 });
 
-router.patch('/:attendanceId', checkAuth, (req,res,next) =>{
-    const id = req.params.attendanceId;
+router.patch('/:invitationId', checkAuth, (req,res,next) =>{
+    const id = req.params.invitationId;
     const updateOps = {};
     for(const ops of req.body){
         updateOps[ops.propName] = ops.value;
     }
-    Attendance.update({_id: id}, {$set: updateOps})
+    Invitation.update({_id: id}, {$set: updateOps})
     .exec()
     .then(result=> {
         res.status(200).json({
-            message: 'Attendance updated',
+            message: 'Invitation updated',
             request: {
                 type: 'GET',
-                url: 'http://localhost:3000/attendances/' + id
+                url: 'http://localhost:3000/invitations/' + id
             }
         });
     })
@@ -132,14 +127,14 @@ router.patch('/:attendanceId', checkAuth, (req,res,next) =>{
     });
 });
 
-router.delete('/:attendanceId', checkAuth, (req, res, next) => {
-    Attendance.remove({_id: req.params.attendanceId}).exec()
+router.delete('/:invitationId', checkAuth, (req, res, next) => {
+    Invitation.remove({_id: req.params.invitationId}).exec()
     .then(result => {
         res.status(200).json({
-            message: 'Attendance deleted',
+            message: 'Invitation deleted',
             request :{
                 type: 'POST',
-                url: "http://localhost:3000/attendances",
+                url: "http://localhost:3000/invitations",
                 body: {
                     productId: 'ID',
                     userId: 'ID'
