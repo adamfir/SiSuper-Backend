@@ -4,6 +4,7 @@ var router = express.Router();
 var bcript = require('bcrypt')
 var User = require('../model/users')
 var jwt = require('jsonwebtoken')
+var path = require("path")
 
 //img upload
 var multer = require('multer')
@@ -284,6 +285,10 @@ router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfile
         message: "Upload Failed"
       })
     })
+})
+
+router.get('/profilePicture', (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../testing/test.jpg'))
 })
 
 router.post('/nullImage:userId', (req, res, next) => {

@@ -36,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('img'))
 app.use('/testing', express.static(__dirname+'/testing'))
 
+
 //routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
