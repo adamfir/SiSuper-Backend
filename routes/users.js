@@ -121,7 +121,7 @@ router.post('/signIn', (req, res, next) => {
               userId: user._id
               }, process.env.JWT_KEY, 
               {
-                expiresIn: "1h"
+                expiresIn: "10000h"
               }
             )
             res.status(200).json({
