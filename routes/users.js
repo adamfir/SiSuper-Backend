@@ -287,8 +287,9 @@ router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfile
     })
 })
 
-router.get('/profilePicture', (req, res, next) => {
-  res.sendFile(path.join(__dirname, '../testing/test.jpg'))
+router.get('/profilePicture/:userId', (req, res, next) => {
+  id = req.params.userId,
+  res.sendFile(path.join(__dirname, '../img/userProfilePicture/' + id + '.jpg'))
 })
 
 router.post('/nullImage:userId', (req, res, next) => {
