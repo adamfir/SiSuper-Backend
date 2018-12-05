@@ -9,8 +9,9 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eventRouter = require('./routes/events');
 var attendanceRouter = require('./routes/attendances');
-var reviewRouter = require('./routes/reviews')
-var productRouter = require('./routes/products')
+var reviewRouter = require('./routes/reviews');
+var productRouter = require('./routes/products');
+var invitationRouter = require('./routes/invitations');
 
 var app = express();
 
@@ -39,8 +40,9 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventRouter);
 app.use('/attendances', attendanceRouter);
-app.use('/reviews', reviewRouter)
-app.use('/products', productRouter)
+app.use('/reviews', reviewRouter);
+app.use('/products', productRouter);
+app.use('/invitations', invitationRouter);
 
 // cek up API
 app.get('/test', (req, res, next) => {
