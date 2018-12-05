@@ -277,6 +277,12 @@ router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfile
         message: "Upload Success!"
       })
     })
+    .catch(err => {
+      res.status(200).json({
+        status: 500,
+        message: "Upload Failed"
+      })
+    })
 })
 
 router.post('/nullImage:userId', (req, res, next) => {
