@@ -268,6 +268,7 @@ router.post('/editProfile/:userId', checkAuth, (req, res, next) => {
 })
 
 router.post('/editProfilePicture/:userId', imgProfilePicture.single('userProfilePicture'), checkAuth, (req, res, next) => {
+  id = req.params.userId,
   User.updateOne({_id: id}, {$set: {
     image: req.file.path}})
     .exec()
