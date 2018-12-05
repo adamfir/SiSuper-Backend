@@ -33,7 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // storage
-app.use('/userProfilePicture', express.static('img/userProfilePicture'))
+app.use(express.static('img'))
 
 //routes
 app.use('/', indexRouter);
