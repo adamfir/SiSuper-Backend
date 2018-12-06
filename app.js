@@ -12,6 +12,7 @@ var attendanceRouter = require('./routes/attendances');
 var reviewRouter = require('./routes/reviews');
 var productRouter = require('./routes/products');
 var invitationRouter = require('./routes/invitations');
+var businessRouter = require('./routes/business')
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use('/attendances', attendanceRouter);
 app.use('/reviews', reviewRouter);
 app.use('/products', productRouter);
 app.use('/invitations', invitationRouter);
+app.use('/business', businessRouter)
 
 // cek up API
 app.get('/test', (req, res, next) => {

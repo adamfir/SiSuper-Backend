@@ -5,6 +5,34 @@ var bcript = require('bcrypt')
 var Product = require('../model/products')
 var jwt = require('jsonwebtoken')
 
+//img upload
+var multer = require('multer')
+
+//Product Pict
+var fileFilter = (req, file, cb) => {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'image/png'){
+      cb(null, true)
+    }
+    else{
+      cb(null, false)
+    }
+}
+var store = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './img/productPicture/')
+    },
+    filename: function(req, file, cb) {
+      cb(null, req.params.userId.concat('.jpg'))
+    }
+})
+var imgProductPicture = multer({
+    storage: store,
+    limits: {
+      fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+})
+
 const checkAuth = require('../middleware/check-auth');
 
 router.get('/', (req, res, next) => {
@@ -24,7 +52,7 @@ router.get('/', (req, res, next) => {
     })
 })
 
-router.post('/addProduct', (req, res, next) => {
+router.post('/addProduct', checkAuth, (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         bussiness_id: req.body.bussinessId,
@@ -47,7 +75,7 @@ router.post('/addProduct', (req, res, next) => {
         })
 })
 
-router.delete('/deleteProduct', (req, res, next) => {
+router.delete('/deleteProduct', checkAuth, (req, res, next) => {
     Product.deleteOne({_id: req.body.productId})
         .exec()
         .then(result => {
@@ -64,7 +92,7 @@ router.delete('/deleteProduct', (req, res, next) => {
         })
 })
 
-router.post('/editProduct', (req, res ,next) => {
+router.post('/editProduct', checkAuth, (req, res ,next) => {
     Product.updateOne({_id: req.body.productId}, {$set:{
         name: req.body.productName,
         price: req.body.productPrice,
@@ -85,7 +113,7 @@ router.post('/editProduct', (req, res ,next) => {
     })
 })
 
-router.post('/getProductByBussinessId', (req, res, next) => {
+router.post('/getProductByBussinessId', checkAuth, (req, res, next) => {
     Product.find({ bussiness_id: req.body.bussinessId })
         .exec()
         .then(products => {
@@ -102,7 +130,7 @@ router.post('/getProductByBussinessId', (req, res, next) => {
         })
 })
 
-router.post('/getProductById', (req, res, next) => {
+router.post('/getProductById', checkAuth, (req, res, next) => {
     Product.findOne({_id: req.body.productId})
         .exec()
         .then(product => {
