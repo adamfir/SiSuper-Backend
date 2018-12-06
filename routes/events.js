@@ -155,8 +155,8 @@ router.delete('/:eventId', checkAuth, (req,res,next) =>{
 
 router.get('/search/:text', checkAuth, (req,res,next) =>{
     const text = req.params.text;
-    Event.find({ $text: { $search: text } })
-    .select('name organized_by date location description _id')
+    Event.find({ $text: { $search: "Pelatihan" } })
+    //.select('name organized_by date location description _id')
     .exec()
     .then(doc=>{
         console.log("From Database",doc);
