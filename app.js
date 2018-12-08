@@ -5,17 +5,25 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
-
+var testingRouter = require('./routes/testings')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var eventRouter = require('./routes/events');
+var attendanceRouter = require('./routes/attendances');
+var reviewRouter = require('./routes/reviews');
+var productRouter = require('./routes/products');
+var invitationRouter = require('./routes/invitations');
+var businessRouter = require('./routes/business');
+var certificateRouter = require('./routes/certificates')
 
 var app = express();
 
 // connect to db
 // connect to database
+// db activated mongod.exe --dbpath "c:\mongodb\data"
 mongoose.connect('mongodb://localhost:27017/SiSuper2', {
-    useNewUrlParser: true 
-})
+    useNewUrlParser: true
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,8 +35,30 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// storage
+app.use(express.static('img'))
+app.use('/testing', express.static(__dirname+'/testing'))
+
+
+//routes
+app.use('/testing', testingRouter)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/events', eventRouter);
+app.use('/attendances', attendanceRouter);
+app.use('/reviews', reviewRouter);
+app.use('/products', productRouter);
+app.use('/invitations', invitationRouter);
+app.use('/business', businessRouter)
+app.use('/certificates', certificateRouter)
+
+// cek up API
+app.get('/test', (req, res, next) => {
+  res.status(200).json({
+    status: 200,
+    message: 'ready to rock n roll!'
+  })
+})
 
 // Header Jamu error CORS
 app.use((req, res, next) => {
