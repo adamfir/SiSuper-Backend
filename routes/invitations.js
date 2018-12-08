@@ -17,7 +17,7 @@ router.get('/', checkAuth, (req, res, next) => {
     .then(docs =>{
         res.status(200).json({
             count: docs.length,
-            attendance: docs.map(doc =>{
+            invitation: docs.map(doc =>{
                 return {
                     _id: doc._id,
                     event: doc.event,
@@ -57,7 +57,7 @@ router.post('/', checkAuth, (req, res, next) => {
                 console.log(result);
                 res.status(201).json({
                     message: 'Invitation stored',
-                    createdAttendance: {
+                    createdInvitation: {
                         _id: result._id,
                         event: result.event,
                         user: result.user
@@ -78,7 +78,7 @@ router.post('/', checkAuth, (req, res, next) => {
 });
 
 router.get('/:invitationId', checkAuth, (req, res, next) => {
-    Attendance.findById(req.params.invitationId)
+    Invitation.findById(req.params.invitationId)
     .populate('event user')
     .exec()
     .then(invitation => {
@@ -88,7 +88,7 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
             });
         }
         res.status(200).json({
-            attendance: attendance,
+            invitation: invitation,
             request :{
                 type: 'GET',
                 url: "http://localhost:3000/invitations"
@@ -102,52 +102,7 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
     });
 });
 
-router.patch('/:invitationId', checkAuth, (req,res,next) =>{
-    const id = req.params.invitationId;
-    const updateOps = {};
-    for(const ops of req.body){
-        updateOps[ops.propName] = ops.value;
-    }
-    Invitation.update({_id: id}, {$set: updateOps})
-    .exec()
-    .then(result=> {
-        res.status(200).json({
-            message: 'Invitation updated',
-            request: {
-                type: 'GET',
-                url: 'http://localhost:3000/invitations/' + id
-            }
-        });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error:err
-        });
-    });
-});
 
-router.delete('/:invitationId', checkAuth, (req, res, next) => {
-    Invitation.remove({_id: req.params.invitationId}).exec()
-    .then(result => {
-        res.status(200).json({
-            message: 'Invitation deleted',
-            request :{
-                type: 'POST',
-                url: "http://localhost:3000/invitations",
-                body: {
-                    productId: 'ID',
-                    userId: 'ID'
-                }
-            }
-        })
-    })
-    .catch(err=>{
-        res.status(500).json({
-            error:err
-        })
-    });
-});
 
 
 module.exports = router;

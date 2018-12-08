@@ -153,32 +153,43 @@ router.delete('/:eventId', checkAuth, (req,res,next) =>{
     });
 });
 
-router.get('/search/:text', checkAuth, (req,res,next) =>{
-    const text = req.params.text;
-    Event.find({ $text: { $search: text } })
-    .select('name organized_by date location description _id')
-    .exec()
-    .then(doc=>{
-        console.log("From Database",doc);
-        if(doc){
-            res.status(200).json({
-                event: doc,
-                request: {
-                    type: 'GET',
-                    url: "http://localhost:3000/events"
-                }
-            });
+router.post('/search', checkAuth, (req, res, next) => {
+    const search = req.body.search;
+    Event.find({
+        $text: { $search: search },
+      })
+      .exec()
+      .then(docs => {
+        if(docs.length == 0){
+            res.status(404).json({message: "Search not found"});
         }
         else{
-            res.status(404).json({message: "There is no event that match"});
+        const response = {
+            count: docs.length,
+            event: docs.map(doc => {
+                return {
+                    name: doc.name,
+                    organized_by: doc.organized_by,
+                    date: doc.date,
+                    location: doc.location,
+                    description: doc.description,
+                    _id: doc._id,
+                    request:{
+                        type: 'GET',
+                        url: 'http://localhost:3000/events/' + doc._id
+                    }
+                }
+            })
+        };
+        res.status(200).json(response);
         }
-        res.status(200).json(doc);
     })
     .catch(err => {
         console.log(err);
-        res.status(500).json(err);
+        res.status(500).json({
+            error: err
+        });
     });
 });
-
 
 module.exports = router;
