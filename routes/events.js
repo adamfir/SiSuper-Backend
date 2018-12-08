@@ -160,6 +160,10 @@ router.post('/search', checkAuth, (req, res, next) => {
       })
       .exec()
       .then(docs => {
+        if(docs.length == 0){
+            res.status(404).json({message: "Search not found"});
+        }
+        else{
         const response = {
             count: docs.length,
             event: docs.map(doc => {
@@ -178,7 +182,7 @@ router.post('/search', checkAuth, (req, res, next) => {
             })
         };
         res.status(200).json(response);
-
+        }
     })
     .catch(err => {
         console.log(err);
