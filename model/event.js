@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
 const eventSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -8,5 +9,6 @@ const eventSchema = mongoose.Schema({
     location: {type: String, required: true},
     description: {type: String, required: true}
 });
+eventSchema.index({name: 'text'});
 
 module.exports = mongoose.model('Event', eventSchema);
