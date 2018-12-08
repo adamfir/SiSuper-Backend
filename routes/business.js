@@ -35,6 +35,8 @@ var businessPicture = multer({
   fileFilter: fileFilter
 })
 
+//Certificate Pict
+
 const checkAuth = require('../middleware/check-auth');
 
 router.get('/', (req, res, next) => {
@@ -98,7 +100,7 @@ router.get('/getBusinessByUserId', checkAuth, (req, res, next) => {
         })
 })
 
-router.post('/addBusiness', businessPicture.single('businessPicture'), checkAuth, (req, res, next) => {
+router.post('/addBusiness', businessPicture.single('businessPicture'), (req, res, next) => {
     const business = new Business({
         _id: new mongoose.Types.ObjectId(),
         user_id: req.body.userId,
@@ -115,7 +117,7 @@ router.post('/addBusiness', businessPicture.single('businessPicture'), checkAuth
         twitter: req.body.businessTwitter,
         line: req.body.businessLine,
         instagram: req.body.businessInstagram,
-        logo: req.file.name
+        logo: req.file.filename
     })
 
     business.save()
@@ -128,7 +130,7 @@ router.post('/addBusiness', businessPicture.single('businessPicture'), checkAuth
         .catch(err => {
             res.status(500).json({
                 status: 500,
-                message: err,
+                message: err
             })
         })
 
@@ -136,6 +138,54 @@ router.post('/addBusiness', businessPicture.single('businessPicture'), checkAuth
 
 router.get('/getBusinessPicture/:logo', checkAuth, (req, res, next) => {
     res.sendFile(path.join(__dirname, '../img/businessPicture/', req.params.logo))
+})
+
+router.post('/deleteBusiness', checkAuth, (req, res, next) => {
+    Business.deleteOne({ _id: req.body.businessId }).exec()
+        .then(result => {
+            res.status(200).json({
+                status: 200,
+                message: "success!"
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                status: 500,
+                message: err
+            })
+        })
+})
+
+router.post('/editBusiness', checkAuth, (req, res, next) => {
+    Business.updateOne( { _id: req.body.businessId}, 
+        {$set: {
+            name: req.body.businessName,
+            category: req.body.businessCategory,
+            established_date: req.body.establishedDate,
+            revenue: req.body.businessRevenue,
+            description: req.body.businessDescription,
+            address: req.body.businessAddress,
+            email: req.body.businessEmail,
+            phone: req.body.businessPhone,
+            site: req.body.businessSite,
+            facebook: req.body.businessFacebook,
+            twitter: req.body.businessTwitter,
+            line: req.body.businessLine,
+            instagram: req.body.businessInstagram
+        }}    
+    )
+    .then(result => {
+        res.status(200).json({
+            status: 200,
+            message: "success!"
+        })
+    })
+    .catch(err => {
+        res.status(200).json({
+            status: 500,
+            message: err
+        })
+    })
 })
 
 module.exports = router;

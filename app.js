@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
+var testingRouter = require('./routes/testings')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eventRouter = require('./routes/events');
@@ -12,7 +13,8 @@ var attendanceRouter = require('./routes/attendances');
 var reviewRouter = require('./routes/reviews');
 var productRouter = require('./routes/products');
 var invitationRouter = require('./routes/invitations');
-var businessRouter = require('./routes/business')
+var businessRouter = require('./routes/business');
+var certificateRouter = require('./routes/certificates')
 
 var app = express();
 
@@ -39,6 +41,7 @@ app.use('/testing', express.static(__dirname+'/testing'))
 
 
 //routes
+app.use('/testing', testingRouter)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventRouter);
@@ -47,6 +50,7 @@ app.use('/reviews', reviewRouter);
 app.use('/products', productRouter);
 app.use('/invitations', invitationRouter);
 app.use('/business', businessRouter)
+app.use('/certificates', certificateRouter)
 
 // cek up API
 app.get('/test', (req, res, next) => {
