@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var cors = require('cors')
 
 var testingRouter = require('./routes/testings')
 var indexRouter = require('./routes/index');
@@ -18,7 +19,7 @@ var businessRouter = require('./routes/business');
 var certificateRouter = require('./routes/certificates')
 
 var app = express();
-
+app.use(cors())
 // connect to db
 // connect to database
 // db activated mongod.exe --dbpath "c:\mongodb\data"
@@ -66,18 +67,18 @@ app.get('/test', (req, res, next) => {
 })
 
 // Header Jamu error CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Header', '*')
-  if (req.method == 'OPTIONS'){
-      res.header(
-          'Access-Control-Allow-Methods',
-          'PUT, POST, PATCH, DELETE, GET'    
-      )
-      return res.status(200).json({})
-  }
-  next()
-})
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*')
+//   res.header('Access-Control-Allow-Header', '*')
+//   if (req.method == 'OPTIONS'){
+//       res.header(
+//           'Access-Control-Allow-Methods',
+//           'PUT, POST, PATCH, DELETE, GET'    
+//       )
+//       return res.status(200).json({})
+//   }
+//   next()
+// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
