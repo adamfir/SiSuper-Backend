@@ -64,7 +64,7 @@ router.get('/getBusiness', checkAuth, (req, res, next) => {
         })
 })
 
-router.get('/getBusinessById', checkAuth, (req, res, next) => {
+router.post('/getBusinessById', checkAuth, (req, res, next) => {
     Business.findOne({ _id: req.body.businessId })
         .exec()
         .then(result => {
@@ -82,7 +82,7 @@ router.get('/getBusinessById', checkAuth, (req, res, next) => {
         })
 })
 
-router.get('/getBusinessByUserId', checkAuth, (req, res, next) => {
+router.post('/getBusinessByUserId', checkAuth, (req, res, next) => {
     Business.find({ _id: req.body.userId })
         .exec()
         .then(result => {

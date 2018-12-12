@@ -24,7 +24,7 @@ var store = multer.diskStorage({
   },
   filename: function(req, file, cb) {
     name = req.body.idOwner + '-' + file.originalname
-    cb(null, name.concat('.jpg'))
+    cb(null, name)
   }
 })
 var certificatePicture = multer({
@@ -44,7 +44,7 @@ router.get('/', (req, res, next) => {
   })
 })
 
-router.post('/addCertificateUser', certificatePicture.single('certificatePicture'), (req, res, next) => {
+router.post('/addCertificateUser', certificatePicture.single('certificatePicture'), checkAuth, (req, res, next) => {
     const certificate = new Certifcate({
         _id: new mongoose.Types.ObjectId(),
         idOwner: req.body.idOwner,
@@ -67,8 +67,8 @@ router.post('/addCertificateUser', certificatePicture.single('certificatePicture
       })
 })
 
-router.post('/deleteCertificate', (req, res, next) => {
-  Certifcate.deleteOne({ _id: req.certificate.certificateId })
+router.post('/deleteCertificate', checkAuth, (req, res, next) => {
+  Certifcate.deleteOne({ _id: req.body.certificateId })
     .then(result => {
       res.status(200).json({
         status: 200,
@@ -83,8 +83,8 @@ router.post('/deleteCertificate', (req, res, next) => {
     })
 })
 
-router.post('/editCertificate', certificatePicture.single('certificatePicture'), (req, res, next) => {
-  Certifcate.updateOne({ _id: req.certificate.certificateId}, {$set: {
+router.post('/editCertificate', certificatePicture.single('certificatePicture'), checkAuth, (req, res, next) => {
+  Certifcate.updateOne({ _id: req.body.certificateId}, {$set: {
     image: req.file.filename
   }})
   .then(result => {
@@ -99,6 +99,28 @@ router.post('/editCertificate', certificatePicture.single('certificatePicture'),
       message: err
     })
   })
+})
+
+router.post('/getCertificateUser', checkAuth, (req, res, next) => {
+  Certifcate.find({ idOwner: req.body.userId }, '_id image')
+    .then(result => {
+      res.status(200).json({
+        status: 200,
+        message: 'success!',
+        result: result
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        status: 500,
+        message: err
+      })
+    })
+})
+
+router.get('/getCertificatePict/:certificatePict', checkAuth, (req, res, next) => {
+  img = req.params.certificatePict,
+  res.sendFile(path.join(__dirname, '../img/cerificatePicture/' + img))
 })
 
 module.exports = router;
