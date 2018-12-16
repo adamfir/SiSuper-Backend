@@ -190,7 +190,7 @@ router.get('/userList', checkAuth, (req, res, next) => {
 
 router.get('/getUserById/:userId', checkAuth, (req, res, next) => {
   id = req.param.userId
-  User.findOne({_id: "5bc9e5ed6bea852cb47221fe"})
+  User.findOne({_id: req.params.userId})
     .exec()
     .then(user => {
       res.status(200).json({
