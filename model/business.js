@@ -10,7 +10,7 @@ const businessSchema = mongoose.Schema({
     description: {type: String, required: true},
     address: {type: String, required: true},
     email: {type: String, required: true},
-    phone: {type: Number, required: true},
+    phone: {type: String, required: true},
     site: {type: String, required: true},
     facebook: {type: String, required: true},
     twitter: {type: String, required: true},

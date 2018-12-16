@@ -50,6 +50,7 @@ router.get('/', checkAuth, (req, res, next) => {
                     location: doc.location,
                     description: doc.description,
                     _id: doc._id,
+                    picture: doc.picture,
                     request:{
                         type: 'GET',
                         url: 'http://localhost:3000/events/' + doc._id
