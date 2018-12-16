@@ -114,7 +114,7 @@ router.post('/editProduct', checkAuth, (req, res ,next) => {
 })
 
 router.post('/getProductByBussinessId', checkAuth, (req, res, next) => {
-    Product.find({ bussiness_id: req.body.bussinessId })
+    Product.find({ business_id: req.body.businessId })
         .exec()
         .then(products => {
             res.status(200).json({
