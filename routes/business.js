@@ -136,7 +136,7 @@ router.post('/addBusiness', businessPicture.single('businessPicture'), (req, res
 
 })
 
-router.get('/getBusinessPicture/:logo', checkAuth, (req, res, next) => {
+router.get('/getBusinessPicture/:logo', (req, res, next) => {
     var logo = req.params.logo.replace(/%20/g, " ");
     logo = logo + '.jpg'
     res.sendFile(path.join(__dirname, '../img/businessPicture/', logo))
