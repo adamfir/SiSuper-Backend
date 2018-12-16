@@ -2,8 +2,38 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const checkAuth = require('../middleware/check-auth');
-
+var path = require("path")
 const Event = require('../model/event')
+
+//img upload
+var multer = require('multer')
+
+//Event Pict
+var fileFilter = (req, file, cb) => {
+  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'image/png'){
+    cb(null, true)
+  }
+  else{
+    cb(null, false)
+  }
+}
+var store = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './img/eventPicture/')
+  },
+  filename: function(req, file, cb) {
+    var num = Math.floor(Math.random() * 100) + 1
+    name = req.body.location + '-' + req.body.name + '-' + num + '.jpg'
+    cb(null, name)
+  }
+})
+var eventPicture = multer({
+  storage: store,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+})
 
 router.get('/', checkAuth, (req, res, next) => {
     Event.find()
@@ -38,14 +68,15 @@ router.get('/', checkAuth, (req, res, next) => {
     });
 });
 
-router.post('/', checkAuth, (req, res, next) => {
+router.post('/', eventPicture.single('eventPicture'), checkAuth, (req, res, next) => {
     const event = new Event({ 
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         organized_by: req.body.organized_by,
         date: req.body.date,
         location: req.body.location,
-        description: req.body.description
+        description: req.body.description,
+        picture: req.file.filename
     });
     event.save().then(result=>{
         console.log(result);
@@ -72,6 +103,15 @@ router.post('/', checkAuth, (req, res, next) => {
         });
     });
 });
+
+router.get('/eventPicture/:eventPict', (req, res, next) => {
+    var img = req.params.eventPict.replace(/%20/g, " ");
+    img = img + '.jpg'
+    res.sendFile(path.join(__dirname, '../img/eventPicture/', img))
+    // res.status(200).json({
+    //     ini: img
+    // })
+})
 
 router.get('/:eventId', checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
