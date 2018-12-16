@@ -55,7 +55,7 @@ router.get('/', (req, res, next) => {
 router.post('/addProduct', checkAuth, (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
-        bussiness_id: req.body.bussinessId,
+        business_id: req.body.bussinessId,
         name: req.body.productName,
         price: req.body.productPrice,
         unit: req.body.productUnit
