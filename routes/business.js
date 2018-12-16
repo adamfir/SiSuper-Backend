@@ -137,7 +137,8 @@ router.post('/addBusiness', businessPicture.single('businessPicture'), (req, res
 })
 
 router.get('/getBusinessPicture/:logo', checkAuth, (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../img/businessPicture/', req.params.logo))
+    var logo = req.params.logo.replace(/%20/g, " ");
+    res.sendFile(path.join(__dirname, '../img/businessPicture/', logo))
 })
 
 router.post('/deleteBusiness', checkAuth, (req, res, next) => {

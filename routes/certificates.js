@@ -119,7 +119,7 @@ router.post('/getCertificateUser', checkAuth, (req, res, next) => {
 })
 
 router.get('/getCertificatePict/:certificatePict', checkAuth, (req, res, next) => {
-  img = req.params.certificatePict,
+  var img = req.params.certificatePict.replace(/%20/g, " ");
   res.sendFile(path.join(__dirname, '../img/cerificatePicture/' + img))
 })
 
