@@ -23,7 +23,7 @@ var store = multer.diskStorage({
     cb(null, './img/cerificatePicture/')
   },
   filename: function(req, file, cb) {
-    name = req.body.idOwner + '-' + file.originalname
+    name = req.body.idOwner + '-' + file.originalname.slice(0, -4) + '.jpg'
     cb(null, name)
   }
 })
