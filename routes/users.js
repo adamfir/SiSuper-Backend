@@ -98,13 +98,13 @@ router.post('/signUp', (req, res, next) => {
 })
 
 router.post('/signIn', (req, res, next) => {
-  User.findOne({ email: req.body.email})
+  User.findOne({ email: req.body.email, account_status: 1})
     .exec()
     .then(user => {
       if(user == null){
           res.status(404).json({
           status: 404,
-          message: 'user tidak ditemukan'
+          message: 'user tidak ditemukan atau akun anda telah di-suspend oleh admin'
         })
       }
       else{
