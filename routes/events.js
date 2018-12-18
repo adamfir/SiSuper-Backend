@@ -37,7 +37,6 @@ var eventPicture = multer({
 
 router.get('/', checkAuth, (req, res, next) => {
     Event.find()
-    .select('name organized_by date location description _id')
     .exec()
     .then(docs => {
         const response = {
