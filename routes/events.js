@@ -42,21 +42,7 @@ router.get('/', checkAuth, (req, res, next) => {
     .then(docs => {
         const response = {
             count: docs.length,
-            event: docs.map(doc => {
-                return {
-                    name: doc.name,
-                    organized_by: doc.organized_by,
-                    date: doc.date,
-                    location: doc.location,
-                    description: doc.description,
-                    _id: doc._id,
-                    picture: doc.picture,
-                    request:{
-                        type: 'GET',
-                        url: 'http://localhost:3000/events/' + doc._id
-                    }
-                }
-            })
+            event: docs
         };
         res.status(200).json(response);
 
