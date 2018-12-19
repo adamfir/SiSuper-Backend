@@ -17,6 +17,7 @@ var productRouter = require('./routes/products');
 var invitationRouter = require('./routes/invitations');
 var businessRouter = require('./routes/business');
 var certificateRouter = require('./routes/certificates')
+var countRouter = require('./routes/counts')
 
 var app = express();
 app.use(cors())
@@ -57,6 +58,7 @@ app.use('/products', productRouter);
 app.use('/invitations', invitationRouter);
 app.use('/business', businessRouter)
 app.use('/certificates', certificateRouter)
+app.use('/counts', countRouter)
 
 // cek up API
 app.get('/test', (req, res, next) => {
