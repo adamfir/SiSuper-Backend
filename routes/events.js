@@ -126,7 +126,7 @@ router.get('/:eventId', checkAuth, (req,res,next) =>{
     });
 });
 
-router.patch('/:eventId', checkAuth, (req,res,next) =>{
+router.patch('/:eventId', eventPicture.single('eventPicture'), checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
     
     // const updateOps = {};
