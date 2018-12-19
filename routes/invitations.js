@@ -102,7 +102,30 @@ router.get('/:invitationId', checkAuth, (req, res, next) => {
     });
 });
 
-
+router.get('/getInvitationByUser/:userId', checkAuth, (req, res, next) => {
+    Invitation.find({'user': req.params.userId})
+    .populate('event')
+    .exec()
+    .then(invitation => {
+        if(!invitation){
+            return res.status(404).json({
+                message: 'Invitation not found'
+            });
+        }
+        res.status(200).json({
+            invitation: invitation,
+            request :{
+                type: 'GET',
+                url: "http://localhost:3000/invitations"
+            }
+        })
+    })
+    .catch(err=>{
+        res.status(500).json({
+            error:err
+        })
+    });
+});
 
 
 module.exports = router;
