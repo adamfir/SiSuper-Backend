@@ -128,12 +128,19 @@ router.get('/:eventId', checkAuth, (req,res,next) =>{
 
 router.patch('/:eventId', checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
+    
     // const updateOps = {};
     // for(const ops of req.body){
     //     updateOps[ops.propName] = ops.value;
     // }
-    Event.update({_id: id}
-        // , {$set: updateOps}
+    Event.update({_id: id}, {$set: {
+        name: req.body.name,
+        organized_by: req.body.organized_by,
+        date: req.body.date,
+        location: req.body.location,
+        description: req.body.description,
+        picture: req.file.filename
+    }}
         )
     .exec()
     .then(result=> {
