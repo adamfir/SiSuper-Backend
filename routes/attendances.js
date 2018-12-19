@@ -142,7 +142,8 @@ router.delete('/:attendanceId', checkAuth, (req, res, next) => {
                 url: "http://localhost:3000/attendances",
                 body: {
                     productId: 'ID',
-                    userId: 'ID'
+                    userId: 'ID',
+                    response: 'int'
                 }
             }
         })

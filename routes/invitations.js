@@ -127,5 +127,51 @@ router.get('/getInvitationByUser/:userId', checkAuth, (req, res, next) => {
     });
 });
 
+router.patch('/:invitationId', checkAuth, (req,res,next) =>{
+    const id = req.params.invitationId;
+    const updateOps = {};
+    for(const ops of req.body){
+        updateOps[ops.propName] = ops.value;
+    }
+    Invitation.update({_id: id}, {$set: updateOps})
+    .exec()
+    .then(result=> {
+        res.status(200).json({
+            message: 'invitation updated',
+            request: {
+                type: 'GET',
+                url: 'http://localhost:3000/invitations/' + id
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error:err
+        });
+    });
+});
+
+router.delete('/:invitationId', checkAuth, (req,res,next) =>{
+    const id = req.params.invitationId;
+    Invitation.remove({_id: id})
+    .exec()
+    .then(result => {
+        res.status(200).json({
+            message: 'Invitation deleted',
+            request: {
+                type: 'POST',
+                url: 'http://localhost:3000/events'
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        }); 
+    });
+});
+
 
 module.exports = router;
