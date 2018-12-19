@@ -39,7 +39,6 @@ router.get('/', checkAuth, (req, res, next) => {
     })
 });
 
-
 router.post('/', checkAuth, (req, res, next) => {
     Event.findById(req.body.eventId)
     .then(event =>{
