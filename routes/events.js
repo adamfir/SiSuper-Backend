@@ -128,11 +128,13 @@ router.get('/:eventId', checkAuth, (req,res,next) =>{
 
 router.patch('/:eventId', checkAuth, (req,res,next) =>{
     const id = req.params.eventId;
-    const updateOps = {};
-    for(const ops of req.body){
-        updateOps[ops.propName] = ops.value;
-    }
-    Event.update({_id: id}, {$set: updateOps})
+    // const updateOps = {};
+    // for(const ops of req.body){
+    //     updateOps[ops.propName] = ops.value;
+    // }
+    Event.update({_id: id}
+        // , {$set: updateOps}
+        )
     .exec()
     .then(result=> {
         res.status(200).json({

@@ -155,5 +155,29 @@ router.delete('/:attendanceId', checkAuth, (req, res, next) => {
     });
 });
 
+router.get('/getAttendancesByEvent/:eventId', checkAuth, (req, res, next) => {
+    Attendance.find({'event': req.params.eventId})
+    .populate('event')
+    .exec()
+    .then(attendance => {
+        if(!attendance){
+            return res.status(404).json({
+                message: 'Attendance not found'
+            });
+        }
+        res.status(200).json({
+            attendance: attendance,
+            request :{
+                type: 'GET',
+                url: "http://localhost:3000/attendances"
+            }
+        })
+    })
+    .catch(err=>{
+        res.status(500).json({
+            error:err
+        })
+    });
+});
 
 module.exports = router;
